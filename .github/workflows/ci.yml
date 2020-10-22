@@ -1,0 +1,26 @@
+name: Appication Hosting
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform-job:
+    runs-on: ubuntu-latest
+    container:
+      image: hashicorp/terraform:0.13.5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Terraform
+        run: |
+          terraform init
+          terraform plan
+          terraform apply --auto-approve
+        working-directory: ./terraform
+        env:
+          AWS_DEFAULT_REGION: ap-southeast-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
